@@ -1,16 +1,19 @@
-
 exports.up = function(knex, Promise) {
-    return knex.schema.withSchema('gyba')
-    .createTable( 'ponencias', function( t ) {
-        t.increments('id');
-        t.string('tema').notNullable();
-        t.integer('idPonente').notNullable();
-        t.integer('idCongreso').notNullable();
-        t.integer('idAsistente').notNullable();
-    })
+    return Promise.all([
+        knex.schema.createTable('ponencias', function(t) {
+            t.increments('id').primary();
+            t.string('tema').notNullable();
+            t.integer('idPonente').refernces('id').inTable('ponentes');
+            t.integer('idCongreso').references('id').inTable('congreso');
+            t.integer('idAsistente').references('id').inTable('asistentes');
+        })
+
+    ]);
 };
 
 exports.down = function(knex, Promise) {
-    return knex.schema.withSchema('gyba')
-    .dropTableIfExists( 'ponencias');
+    return Promise.all([
+        knex.schema.dropTable('ponencias'),
+    ]);
+
 };
