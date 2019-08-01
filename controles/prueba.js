@@ -1,12 +1,12 @@
 ;
-let config = require('../knexfile')
-let env = 'development'
-let db = require('knex')(config[env])
+let config = require('../knexfile');
+let env = 'development';
+let db = require('knex')(config[env]);
 
 let getDatos = (req, res) => {
-    let tabla = req.query.tabla
-    let campos = req.query.tabla
-    db.select(campos).from(tabla)
+    let tabla = req.query.tabla;
+    let campo = req.query.campo;
+    db.select(campo).from(tabla)
         .then(resultado => {
             return res.status(200).json({
                 ok: true,
@@ -25,13 +25,12 @@ let getDatos = (req, res) => {
 
 let postDatos = (req, res) => {
     let tabla = req.body.tabla
-    let retorno = req.body.retorno
     let datos = req.body.datos
-    db(tabla).returning(retorno).insert(datos)
+    db(tabla).returning('id').insert(datos)
         .then(resultado => {
             return res.status(200).json({
                 ok: true,
-                datos: resultado,
+                data: resultado,
                 mensaje: `Se insertaron los datos`
             })
         })
@@ -39,35 +38,12 @@ let postDatos = (req, res) => {
     .catch((error) => {
         return res.status(500).json({
             ok: false,
-            datos: null,
+            data: null,
             mensaje: `Error del servidor: ${error}`
         })
     })
 }
 
-// let updateDatos = (req, res) => {
-//     let tabla = req.body.tabla
-//     let datos = req.body.tabla
-//     let contenedor = ''
-//     datos.forEach(element => {
-//         contenedor = element
-//     })
-//     db(tabla).where('id', contenedor.id).update(contenedor)
-//         .then(resultado => {
-//             return res.status(200).json({
-//                 ok: true,
-//                 datos: resultado
-//             })
-//         })
-
-//     .catch((error) => {
-//         return res.status(500).json({
-//             ok: false,
-//             datos: null,
-//             sms: `Error en el servidor ${error}`
-//         })
-//     })
-// }
 let updateDatos = (req, res) => {
     let tabla = req.body.tabla
     let datos = req.body.datos
@@ -93,8 +69,8 @@ let updateDatos = (req, res) => {
 
 let deleteDatos = (req, res) => {
     let tabla = req.body.tabla
-    let id = req.body.id
-    db(tabla).where('id', id).delete()
+    let dataId = req.body.datoId
+    db(tabla).where('id', dataId).delete()
         .then(resultado => {
             return res.status(200).json({
                 ok: true,
@@ -111,10 +87,10 @@ let deleteDatos = (req, res) => {
     })
 }
 
-
 module.exports = {
     getDatos,
     postDatos,
     updateDatos,
-    deleteDatos
+    deleteDatos,
+
 }

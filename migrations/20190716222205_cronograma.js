@@ -1,7 +1,7 @@
 exports.up = function(knex, Promise) {
     return Promise.all([
         knex.schema.createTable('cronograma', function(t) {
-            t.increments('id').primray();
+            t.increments('id').primary();
             t.string('temaPonencia').notNullable();
             t.date('fecha').notNullable();
             t.time('hora').notNullable();
